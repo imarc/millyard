@@ -4,10 +4,16 @@ namespace Imarc\Millyard\Jobs;
 
 use Imarc\Millyard\Attributes\RegistersJob;
 use Imarc\Millyard\Concerns\DiscoversClasses;
+use Imarc\Millyard\Concerns\RegistersHooks;
+use Imarc\Millyard\Services\Container;
 
 class Registrar
 {
-    use DiscoversClasses;
+    use DiscoversClasses, RegistersHooks;
+
+    public function __construct(private Container $container)
+    {
+    }
 
     public function registerJobs(string $path = 'Jobs'): void
     {
@@ -20,13 +26,9 @@ class Registrar
 
     public function registerJob(string $jobClass): void
     {
-        $job = new $jobClass();
-
-        if (! method_exists($job, 'register')) {
-            throw new \RuntimeException(sprintf('Could not register class %s. register() does not exist', $jobClass));
-        }
-
-        $job->register();
+        $job = $this->container->get($jobClass);
+        $this->addAction($job->getName(), [$job, 'handle'], 10, 3);
+        
         do_action('millyard_job_registered', $jobClass);
     }
 }
