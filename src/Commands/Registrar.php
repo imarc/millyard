@@ -22,11 +22,16 @@ class Registrar
     {
         $command = new $commandClass();
 
-        if (! method_exists($command, 'register')) {
-            throw new \RuntimeException(sprintf('Could not register class %s. register() does not exist', $commandClass));
+        if (! (defined('WP_CLI') && constant('WP_CLI'))) {
+            return;
         }
 
-        $command->register();
+        \WP_CLI::add_command($command->name, $command, [
+            'shortdesc' => $command->shortDescription,
+            'longdesc' => $command->longDescription,
+            'when' => $command->when,
+        ]);
+
         do_action('millyard_command_registered', $commandClass);
     }
 }
