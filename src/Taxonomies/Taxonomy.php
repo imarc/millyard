@@ -32,6 +32,8 @@ abstract class Taxonomy
 
     protected ?int $menuItemPosition = null;
 
+    protected bool $isHierarchical = true;
+
     protected function getDefaultArgs(): array
     {
         return [
@@ -39,7 +41,7 @@ abstract class Taxonomy
             'description' => '',
             'public' => true,
             'publicly_queryable' => true,
-            'hierarchical' => true,
+            'hierarchical' => $this->isHierarchical,
             'show_ui' => true,
             'show_in_menu' => true,
             'show_in_nav_menus' => true,
@@ -50,7 +52,7 @@ abstract class Taxonomy
             'show_tagcloud' => false,
             'show_in_quick_edit' => false,
             'show_admin_column' => false,
-            'meta_box_cb' => false,
+            'meta_box_cb' => $this->isHierarchical ? 'post_categories_meta_box' : 'post_tags_meta_box',
             'meta_box_sanitize_cb' => null,
             'capabilities' => [
                 'manage_terms' => 'manage_categories',
