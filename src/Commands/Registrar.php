@@ -4,10 +4,15 @@ namespace Imarc\Millyard\Commands;
 
 use Imarc\Millyard\Attributes\RegistersCommand;
 use Imarc\Millyard\Concerns\DiscoversClasses;
+use Imarc\Millyard\Services\Container;
 
 class Registrar
 {
     use DiscoversClasses;
+
+    public function __construct(private Container $container)
+    {
+    }
 
     public function registerCommands(string $path = 'Commands'): void
     {
@@ -20,7 +25,7 @@ class Registrar
 
     public function registerCommand(string $commandClass): void
     {
-        $command = new $commandClass();
+        $command = $this->container->get($commandClass);
 
         if (! (defined('WP_CLI') && constant('WP_CLI'))) {
             return;
