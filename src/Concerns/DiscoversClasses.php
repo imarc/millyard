@@ -11,9 +11,18 @@ trait DiscoversClasses
         $directory = sprintf('%s/app/%s', get_template_directory(), trim($pathSegment, '/'));
         $namespace = sprintf('\\App\\%s\\', $pathSegment);
         $classes = [];
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory)
+        );
 
-        foreach (glob($directory . '/*.php') as $file) {
-            $className = $namespace . basename($file, '.php');
+        foreach ($iterator as $file) {
+            if ($file->isDir() || $file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $relativePath = str_replace($directory . '/', '', $file->getPathname());
+            $relativePath = str_replace('/', '\\', $relativePath);
+            $className = $namespace . str_replace('.php', '', $relativePath);
 
             if (!class_exists($className)) {
                 continue;
