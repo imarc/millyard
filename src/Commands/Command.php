@@ -44,12 +44,12 @@ abstract class Command
         return \WP_CLI::confirm($question, $assoc_args);
     }
 
-    protected function prompt($question)
+    protected function prompt($question, $default = null)
     {
-        \WP_CLI::out($question . ' ');
+        \WP_CLI::out($question . ($default ? ' [' . $default . ']' : '') . ': ');
 
         $input = \fgets(\STDIN);
 
-        return \trim($input);
+        return \trim($input) ?: $default;
     }
 }
