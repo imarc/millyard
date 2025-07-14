@@ -2,7 +2,6 @@
 
 namespace App\Taxonomies;
 
-use App\PostTypes\Resource;
 use Imarc\Millyard\Attributes\RegistersTaxonomy;
 use Imarc\Millyard\Taxonomies\Taxonomy;
 
