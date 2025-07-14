@@ -1,0 +1,22 @@
+<?php
+
+namespace App\PostTypes;
+
+use Imarc\Millyard\Attributes\RegistersPostType;
+use Imarc\Millyard\PostTypes\PostType;
+
+#[RegistersPostType]
+class {{ class }} extends PostType
+{
+    public const SLUG = '{{ slug }}';
+
+    public string $singularLabel = '{{ label }}';
+
+    public string $pluralLabel = '{{ pluralLabel }}';
+
+    public string $path = '{{ slug }}';
+
+    public array $args = [
+        'menu_icon' => 'dashicons-admin-post',
+    ];
+}

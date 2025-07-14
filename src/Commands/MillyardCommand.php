@@ -68,6 +68,39 @@ class MillyardCommand extends Command
         $this->line('Block class and template file created.');
     }
 
+    /**
+     * @subcommand make-post-type
+     */
+    public function makePostType($args, $assoc_args)
+    {
+        $label = $this->prompt('Singular label');
+        $pluralLabel = $this->prompt('Plural label', $label . 's');
+        $slug = $this->prompt('Slug', Str::slug($label));
+        $class = $this->prompt('Class name', Str::pascal($label));
+
+        $postTypeDirectory = sprintf('%s/app/PostTypes', get_template_directory());
+        if (!is_dir($postTypeDirectory)) {
+            mkdir($postTypeDirectory, 0755, true);
+        }
+
+        $postTypeFile = sprintf('%s/%s.php', $postTypeDirectory, $class);
+        if (file_exists($postTypeFile)) {
+            $this->error('Post type class file already exists!');
+            return;
+        }
+
+        $postTypeStub = $this->getStub('PostType', [
+            '{{ class }}' => $class,
+            '{{ slug }}' => $slug,
+            '{{ label }}' => $label,
+            '{{ pluralLabel }}' => $pluralLabel,
+        ]);
+
+        file_put_contents($postTypeFile, $postTypeStub);
+
+        $this->line('Post type class file created.');
+    }
+
     protected function getStub(string $name, array $replacements = []): string
     {
         $stubFile = realpath(sprintf('%s/../stubs/%s.stub', __DIR__, $name));
