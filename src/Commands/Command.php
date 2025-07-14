@@ -43,4 +43,13 @@ abstract class Command
     {
         return \WP_CLI::confirm($question, $assoc_args);
     }
+
+    protected function prompt($question)
+    {
+        \WP_CLI::out($question . ' ');
+
+        $input = \fgets(\STDIN);
+
+        return \trim($input);
+    }
 }
