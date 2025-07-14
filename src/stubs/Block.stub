@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Blocks;
+
+use Imarc\Millyard\Attributes\RegistersBlock;
+use Imarc\Millyard\Blocks\Block;
+
+#[RegistersBlock]
+class {{ class }} extends Block
+{
+    public const NAME = '{{ slug }}';
+    public const TITLE = '{{ title }}';
+    public const CATEGORY = '';
+    public const ICON = 'block-default';
+    public const POST_TYPES = [];
+    public const KEYWORDS = [];
+}
