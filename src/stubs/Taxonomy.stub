@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Taxonomies;
+
+use App\PostTypes\Resource;
+use Imarc\Millyard\Attributes\RegistersTaxonomy;
+use Imarc\Millyard\Taxonomies\Taxonomy;
+
+#[RegistersTaxonomy]
+class {{ class }} extends Taxonomy
+{
+    public const SLUG = '{{ slug }}';
+
+    public string $pluralLabel = '{{ pluralLabel }}';
+
+    public string $singularLabel = '{{ label }}';
+
+    protected array $postTypes = [
+        // put full class names here
+    ];
+
+    protected bool $registersTopLevelMenuItem = false;
+
+    // protected ?string $menuItemName = '{{ pluralLabel }}';
+
+    // protected ?string $menuItemIcon = 'dashicons-admin-generic';
+
+    // protected ?int $menuItemPosition = 6;
+}
