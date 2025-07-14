@@ -36,7 +36,6 @@ class MillyardCommand extends Command
 
         // make sure the directory exists
         $blockDirectory = sprintf('%s/app/Blocks', get_template_directory());
-        $this->line($blockDirectory);
         if (!is_dir($blockDirectory)) {
             mkdir($blockDirectory, 0755, true);
         }
@@ -63,7 +62,7 @@ class MillyardCommand extends Command
             $this->error('Block template file already exists!');
             return;
         }
-        
+
         file_put_contents($templateFile, $templateStub);
 
         $this->line('Block class and template file created.');
@@ -72,8 +71,6 @@ class MillyardCommand extends Command
     protected function getStub(string $name, array $replacements = []): string
     {
         $stubFile = realpath(sprintf('%s/../stubs/%s.stub', __DIR__, $name));
-
-        $this->line($stubFile);
 
         if (!$stubFile) {
             throw new \Exception(sprintf('Stub file %s not found', $name));
