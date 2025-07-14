@@ -1,10 +1,10 @@
 <?php
 
-namespace Imarc\Millyard\Services;
+namespace Imarc\Millyard\Support;
 
 class Str
 {
-    public static function slugify(string $string): string
+    public static function slug(string $string): string
     {
         return strtolower(str_replace(' ', '-', $string));
     }
