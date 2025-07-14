@@ -122,14 +122,14 @@ class MillyardCommand extends Command
             return;
         }
 
-        $postTypeStub = $this->getStub('PostType', [
+        $taxonomyStub = $this->getStub('Taxonomy', [
             '{{ class }}' => $class,
             '{{ slug }}' => $slug,
             '{{ label }}' => $label,
             '{{ pluralLabel }}' => $pluralLabel,
         ]);
 
-        file_put_contents($taxonomyFile, $postTypeStub);
+        file_put_contents($taxonomyFile, $taxonomyStub);
 
         $this->line('Taxonomy class file created.');
     }
