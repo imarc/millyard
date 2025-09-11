@@ -150,7 +150,9 @@ if (! function_exists('function_timer')) {
         $result = $callback();
         $end = microtime(true);
 
-        error_log(sprintf('%s took %s seconds to execute', $name, $end - $start));
+        if (wp_get_environment_type() !== 'testing') {
+            error_log(sprintf('%s took %s seconds to execute', $name, $end - $start));
+        }
 
         return $result;
     }
