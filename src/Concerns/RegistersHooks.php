@@ -23,5 +23,4 @@ trait RegistersHooks
     {
         remove_filter($hook, $callback, $priority);
     }
-
 }

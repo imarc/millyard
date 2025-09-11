@@ -19,9 +19,19 @@ composer test:unit
 # Run only integration tests
 composer test:integration
 
-# Generate code coverage report
+# Generate code coverage report (requires Xdebug or PCOV)
 composer test:coverage
 
 # View coverage as text
 composer test:coverage-text
+```
+
+## Code Quality
+
+```bash
+# Check code style (dry run)
+composer cs-check
+
+# Fix code style issues
+composer cs-fix
 ```

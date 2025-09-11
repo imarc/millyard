@@ -2,7 +2,6 @@
 
 namespace Imarc\Millyard\Tests\Unit\Commands;
 
-use Brain\Monkey;
 use Imarc\Millyard\Commands\Command;
 use Imarc\Millyard\Tests\Unit\TestCase;
 
@@ -13,7 +12,7 @@ class CommandTest extends TestCase
 {
     public function test_command_can_be_instantiated(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public string $name = 'test-command';
             public string $shortDescription = 'A test command';
             public string $longDescription = 'This is a longer description of the test command';
@@ -27,7 +26,7 @@ class CommandTest extends TestCase
 
     public function test_command_has_default_properties(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public string $name = 'test-command';
         };
 
@@ -39,7 +38,7 @@ class CommandTest extends TestCase
 
     public function test_command_properties_can_be_customized(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public string $name = 'custom-command';
             public string $shortDescription = 'Custom command';
             public string $longDescription = 'A custom command with detailed description';
@@ -48,7 +47,7 @@ class CommandTest extends TestCase
                     'type' => 'positional',
                     'name' => 'file',
                     'description' => 'The file to process',
-                ]
+                ],
             ];
             public string $when = 'before_wp_load';
         };
@@ -63,13 +62,13 @@ class CommandTest extends TestCase
 
     public function test_all_wp_cli_methods_are_available(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public string $name = 'test-command';
         };
 
         // Test that all protected methods exist
         $reflection = new \ReflectionClass($command);
-        
+
         $this->assertTrue($reflection->hasMethod('line'));
         $this->assertTrue($reflection->hasMethod('success'));
         $this->assertTrue($reflection->hasMethod('error'));
@@ -77,7 +76,7 @@ class CommandTest extends TestCase
         $this->assertTrue($reflection->hasMethod('log'));
         $this->assertTrue($reflection->hasMethod('confirm'));
         $this->assertTrue($reflection->hasMethod('prompt'));
-        
+
         // Verify methods are protected (accessible to subclasses)
         $this->assertTrue($reflection->getMethod('line')->isProtected());
         $this->assertTrue($reflection->getMethod('success')->isProtected());
@@ -90,9 +89,9 @@ class CommandTest extends TestCase
 
     public function test_command_methods_can_be_called_by_subclass(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public string $name = 'test-command';
-            
+
             public function callProtectedMethods()
             {
                 // These methods exist and can be called (though they'll fail without WP-CLI)
@@ -108,7 +107,7 @@ class CommandTest extends TestCase
                     // Expected - WP_CLI class doesn't exist in test environment
                     // But the methods are callable
                 }
-                
+
                 return true;
             }
         };
@@ -118,7 +117,7 @@ class CommandTest extends TestCase
 
     public function test_synopsis_can_be_complex_array(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public string $name = 'complex-command';
             public array $synopsis = [
                 [
@@ -145,20 +144,20 @@ class CommandTest extends TestCase
         };
 
         $synopsis = $command->synopsis;
-        
+
         $this->assertCount(3, $synopsis);
-        
+
         // Test positional argument
         $this->assertEquals('positional', $synopsis[0]['type']);
         $this->assertEquals('action', $synopsis[0]['name']);
         $this->assertFalse($synopsis[0]['optional']);
-        
+
         // Test associative argument
         $this->assertEquals('assoc', $synopsis[1]['type']);
         $this->assertEquals('format', $synopsis[1]['name']);
         $this->assertEquals('table', $synopsis[1]['default']);
         $this->assertContains('json', $synopsis[1]['options']);
-        
+
         // Test flag
         $this->assertEquals('flag', $synopsis[2]['type']);
         $this->assertEquals('dry-run', $synopsis[2]['name']);
@@ -168,15 +167,15 @@ class CommandTest extends TestCase
     public function test_when_property_accepts_different_values(): void
     {
         $commands = [
-            'before_wp_load' => new class extends Command {
+            'before_wp_load' => new class () extends Command {
                 public string $name = 'early-command';
                 public string $when = 'before_wp_load';
             },
-            'after_wp_load' => new class extends Command {
+            'after_wp_load' => new class () extends Command {
                 public string $name = 'late-command';
                 public string $when = 'after_wp_load';
             },
-            'wp_loaded' => new class extends Command {
+            'wp_loaded' => new class () extends Command {
                 public string $name = 'loaded-command';
                 public string $when = 'wp_loaded';
             },

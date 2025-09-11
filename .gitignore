@@ -3,4 +3,4 @@
 .DS_Store
 coverage/
 composer.lock
-*.log
+*.log/.php-cs-fixer.cache

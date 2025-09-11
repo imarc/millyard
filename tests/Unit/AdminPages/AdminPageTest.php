@@ -13,7 +13,7 @@ class AdminPageTest extends TestCase
 {
     public function test_admin_page_can_be_instantiated(): void
     {
-        $adminPage = new class extends AdminPage {
+        $adminPage = new class () extends AdminPage {
             protected string $slug = 'test-page';
             protected string $title = 'Test Page';
         };
@@ -23,7 +23,7 @@ class AdminPageTest extends TestCase
 
     public function test_register_calls_add_menu_page_for_top_level_page(): void
     {
-        $adminPage = new class extends AdminPage {
+        $adminPage = new class () extends AdminPage {
             protected string $slug = 'test-page';
             protected string $title = 'Test Page';
             protected string $capability = 'manage_options';
@@ -50,7 +50,7 @@ class AdminPageTest extends TestCase
 
     public function test_register_calls_add_submenu_page_when_parent_slug_set(): void
     {
-        $adminPage = new class extends AdminPage {
+        $adminPage = new class () extends AdminPage {
             protected string $slug = 'test-subpage';
             protected string $title = 'Test Subpage';
             protected string $capability = 'manage_options';
@@ -77,7 +77,7 @@ class AdminPageTest extends TestCase
 
     public function test_render_does_nothing_when_no_template_set(): void
     {
-        $adminPage = new class extends AdminPage {
+        $adminPage = new class () extends AdminPage {
             protected string $slug = 'test-page';
             protected string $title = 'Test Page';
         };
@@ -89,13 +89,13 @@ class AdminPageTest extends TestCase
 
     public function test_with_context_returns_empty_array_by_default(): void
     {
-        $adminPage = new class extends AdminPage {
+        $adminPage = new class () extends AdminPage {
             protected string $slug = 'test-page';
             protected string $title = 'Test Page';
         };
 
         $context = $adminPage->withContext();
-        
+
         $this->assertIsArray($context);
         $this->assertEmpty($context);
     }

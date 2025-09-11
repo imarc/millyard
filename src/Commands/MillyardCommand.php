@@ -36,14 +36,15 @@ class MillyardCommand extends Command
 
         // make sure the directory exists
         $blockDirectory = sprintf('%s/app/Blocks', get_template_directory());
-        if (!is_dir($blockDirectory)) {
-            mkdir($blockDirectory, 0755, true);
+        if (! is_dir($blockDirectory)) {
+            mkdir($blockDirectory, 0o755, true);
         }
 
         // make sure the class file doesn't exist
         $blockFile = sprintf('%s/%s.php', $blockDirectory, $class);
         if (file_exists($blockFile)) {
             $this->error('Block class file already exists!');
+
             return;
         }
 
@@ -60,6 +61,7 @@ class MillyardCommand extends Command
         $templateFile = sprintf('%s/templates/blocks/%s', get_template_directory(), $templateFile);
         if (file_exists($templateFile)) {
             $this->error('Block template file already exists!');
+
             return;
         }
 
@@ -79,13 +81,14 @@ class MillyardCommand extends Command
         $class = $this->prompt('Class name', Str::pascal($label));
 
         $postTypeDirectory = sprintf('%s/app/PostTypes', get_template_directory());
-        if (!is_dir($postTypeDirectory)) {
-            mkdir($postTypeDirectory, 0755, true);
+        if (! is_dir($postTypeDirectory)) {
+            mkdir($postTypeDirectory, 0o755, true);
         }
 
         $postTypeFile = sprintf('%s/%s.php', $postTypeDirectory, $class);
         if (file_exists($postTypeFile)) {
             $this->error('Post type class file already exists!');
+
             return;
         }
 
@@ -112,13 +115,14 @@ class MillyardCommand extends Command
         $class = $this->prompt('Class name', Str::pascal($label));
 
         $taxonomyDirectory = sprintf('%s/app/Taxonomies', get_template_directory());
-        if (!is_dir($taxonomyDirectory)) {
-            mkdir($taxonomyDirectory, 0755, true);
+        if (! is_dir($taxonomyDirectory)) {
+            mkdir($taxonomyDirectory, 0o755, true);
         }
 
         $taxonomyFile = sprintf('%s/%s.php', $taxonomyDirectory, $class);
         if (file_exists($taxonomyFile)) {
             $this->error('Taxonomy class file already exists!');
+
             return;
         }
 
@@ -138,7 +142,7 @@ class MillyardCommand extends Command
     {
         $stubFile = realpath(sprintf('%s/../stubs/%s.stub', __DIR__, $name));
 
-        if (!$stubFile) {
+        if (! $stubFile) {
             throw new \Exception(sprintf('Stub file %s not found', $name));
         }
 

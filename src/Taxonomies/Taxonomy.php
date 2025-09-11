@@ -147,6 +147,7 @@ abstract class Taxonomy
             if ($current_screen->taxonomy === static::SLUG) {
                 return 'edit-tags.php?taxonomy='.static::SLUG;
             }
+
             return $parent_file;
         });
     }

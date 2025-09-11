@@ -36,7 +36,9 @@
         "test:unit": "phpunit --testsuite=Unit",
         "test:integration": "phpunit --testsuite=Integration",
         "test:coverage": "phpunit --coverage-html coverage --coverage-clover coverage/clover.xml",
-        "test:coverage-text": "phpunit --coverage-text"
+        "test:coverage-text": "phpunit --coverage-text",
+        "cs-check": "php-cs-fixer fix --dry-run --diff --verbose",
+        "cs-fix": "php-cs-fixer fix --diff --verbose"
     },
     "config": {
         "allow-plugins": {

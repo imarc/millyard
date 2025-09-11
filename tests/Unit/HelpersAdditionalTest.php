@@ -2,8 +2,6 @@
 
 namespace Imarc\Millyard\Tests\Unit;
 
-use Brain\Monkey;
-
 /**
  * Additional test cases for helper functions not covered in HelpersTest.
  */
@@ -35,7 +33,7 @@ class HelpersAdditionalTest extends TestCase
             'cache_forget',
             'cache_flush',
             'cache_get',
-            'cache_set'
+            'cache_set',
         ];
 
         foreach ($helpers as $helper) {
@@ -50,16 +48,17 @@ class HelpersAdditionalTest extends TestCase
         // Let's just verify the function exists and is callable
         $this->assertTrue(function_exists('cache_remember'));
         $this->assertTrue(is_callable('cache_remember'));
-        
+
         // We could test this more thoroughly in integration tests
     }
 
     public function test_function_timer_measures_execution_time(): void
     {
         $callbackExecuted = false;
-        
-        $result = function_timer('test_function', function() use (&$callbackExecuted) {
+
+        $result = function_timer('test_function', function () use (&$callbackExecuted) {
             $callbackExecuted = true;
+
             return 'test_result';
         });
 

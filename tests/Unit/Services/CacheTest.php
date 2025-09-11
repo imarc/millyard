@@ -16,7 +16,7 @@ class CacheTest extends TestCase
         $this->mockConfigFile(['cache' => ['ttl' => 7200]]);
 
         $ttl = Cache::getDefaultTtl();
-        
+
         $this->assertEquals(7200, $ttl);
     }
 
@@ -25,13 +25,13 @@ class CacheTest extends TestCase
         // Don't mock any config file, so config() should return the default value
         // The Cache::getDefaultTtl() calls config('cache.ttl', 60 * 60 * 24)
         // Since cache.ttl is not set, it should return 60 * 60 * 24 = 86400
-        
+
         // But our base TestCase sets up a default config with cache.ttl = 3600
         // So let's mock an empty config instead
         $this->mockConfigFile(['cache' => []]);
 
         $ttl = Cache::getDefaultTtl();
-        
+
         $this->assertEquals(86400, $ttl); // 24 hours default
     }
 
@@ -44,14 +44,14 @@ class CacheTest extends TestCase
 
         $cache = new Cache();
         $result = $cache->get('test_key');
-        
+
         $this->assertEquals('test_value', $result);
     }
 
     public function test_set_calls_wp_cache_set_with_default_ttl(): void
     {
         $this->mockConfigFile(['cache' => ['ttl' => 3600]]);
-        
+
         Monkey\Functions\expect('wp_cache_set')
             ->once()
             ->with('test_key', 'test_value', '', 3600)
@@ -59,7 +59,7 @@ class CacheTest extends TestCase
 
         $cache = new Cache();
         $result = $cache->set('test_key', 'test_value');
-        
+
         $this->assertTrue($result);
     }
 }

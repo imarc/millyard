@@ -13,7 +13,7 @@ class PostTypeTest extends TestCase
 {
     public function test_post_type_can_be_instantiated(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
@@ -25,11 +25,11 @@ class PostTypeTest extends TestCase
 
     public function test_get_labels_returns_proper_structure(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
-            
+
             // Expose protected method for testing
             public function getLabelsPublic(): array
             {
@@ -53,11 +53,11 @@ class PostTypeTest extends TestCase
 
     public function test_get_default_args_returns_proper_structure(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
-            
+
             // Expose protected method for testing
             public function getDefaultArgsPublic(): array
             {
@@ -81,7 +81,7 @@ class PostTypeTest extends TestCase
 
     public function test_register_calls_register_post_type(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
@@ -98,15 +98,15 @@ class PostTypeTest extends TestCase
 
     public function test_custom_args_are_merged_with_defaults(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
             protected array $args = [
                 'public' => false,
-                'custom_field' => 'custom_value'
+                'custom_field' => 'custom_value',
             ];
-            
+
             // Expose protected method for testing
             public function getArgsPublic(): array
             {
@@ -119,7 +119,7 @@ class PostTypeTest extends TestCase
         // Custom args should override defaults
         $this->assertFalse($args['public']);
         $this->assertEquals('custom_value', $args['custom_field']);
-        
+
         // Default args should still be present
         $this->assertTrue($args['show_ui']);
         $this->assertIsArray($args['labels']);
@@ -127,15 +127,15 @@ class PostTypeTest extends TestCase
 
     public function test_custom_labels_are_merged_with_defaults(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
             protected array $labels = [
                 'name' => 'Custom Posts',
-                'custom_label' => 'Custom Value'
+                'custom_label' => 'Custom Value',
             ];
-            
+
             // Expose protected method for testing
             public function getLabelsPublic(): array
             {
@@ -148,21 +148,21 @@ class PostTypeTest extends TestCase
         // Custom labels should override defaults
         $this->assertEquals('Custom Posts', $labels['name']);
         $this->assertEquals('Custom Value', $labels['custom_label']);
-        
+
         // Default labels should still be present
         $this->assertEquals('Test Post', $labels['singular_name']);
     }
 
     public function test_supports_can_be_customized(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
             protected array $args = [
-                'supports' => ['title', 'custom-fields']
+                'supports' => ['title', 'custom-fields'],
             ];
-            
+
             // Expose protected method for testing
             public function getArgsPublic(): array
             {
@@ -177,12 +177,12 @@ class PostTypeTest extends TestCase
 
     public function test_custom_path_affects_rewrite_and_rest_base(): void
     {
-        $postType = new class extends PostType {
+        $postType = new class () extends PostType {
             public const SLUG = 'test_post';
             public string $singularLabel = 'Test Post';
             public string $pluralLabel = 'Test Posts';
             public string $path = 'custom-posts';
-            
+
             // Expose protected method for testing
             public function getDefaultArgsPublic(): array
             {

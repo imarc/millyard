@@ -13,7 +13,7 @@ class TaxonomyTest extends TestCase
 {
     public function test_taxonomy_can_be_instantiated(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
@@ -25,11 +25,11 @@ class TaxonomyTest extends TestCase
 
     public function test_get_labels_returns_proper_structure(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
-            
+
             // Expose protected method for testing
             public function getLabelsPublic(): array
             {
@@ -52,11 +52,11 @@ class TaxonomyTest extends TestCase
 
     public function test_get_default_args_returns_proper_structure(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
-            
+
             // Expose protected method for testing
             public function getDefaultArgsPublic(): array
             {
@@ -80,7 +80,7 @@ class TaxonomyTest extends TestCase
 
     public function test_register_calls_register_taxonomy(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
@@ -97,7 +97,7 @@ class TaxonomyTest extends TestCase
 
     public function test_register_with_post_types(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
@@ -115,15 +115,15 @@ class TaxonomyTest extends TestCase
 
     public function test_custom_args_are_merged_with_defaults(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
             protected array $args = [
                 'public' => false,
-                'custom_field' => 'custom_value'
+                'custom_field' => 'custom_value',
             ];
-            
+
             // Expose protected method for testing
             public function getArgsPublic(): array
             {
@@ -136,7 +136,7 @@ class TaxonomyTest extends TestCase
         // Custom args should override defaults
         $this->assertFalse($args['public']);
         $this->assertEquals('custom_value', $args['custom_field']);
-        
+
         // Default args should still be present
         $this->assertTrue($args['show_ui']);
         $this->assertIsArray($args['labels']);
@@ -144,15 +144,15 @@ class TaxonomyTest extends TestCase
 
     public function test_custom_labels_are_merged_with_defaults(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
             protected array $labels = [
                 'name' => 'Custom Categories',
-                'custom_label' => 'Custom Value'
+                'custom_label' => 'Custom Value',
             ];
-            
+
             // Expose protected method for testing
             public function getLabelsPublic(): array
             {
@@ -165,19 +165,19 @@ class TaxonomyTest extends TestCase
         // Custom labels should override defaults
         $this->assertEquals('Custom Categories', $labels['name']);
         $this->assertEquals('Custom Value', $labels['custom_label']);
-        
+
         // Default labels should still be present
         $this->assertEquals('Test Category', $labels['singular_name']);
     }
 
     public function test_non_hierarchical_taxonomy(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Tag';
             public string $pluralLabel = 'Test Tags';
             protected bool $isHierarchical = false;
-            
+
             // Expose protected method for testing
             public function getDefaultArgsPublic(): array
             {
@@ -193,12 +193,12 @@ class TaxonomyTest extends TestCase
 
     public function test_hierarchical_taxonomy(): void
     {
-        $taxonomy = new class extends Taxonomy {
+        $taxonomy = new class () extends Taxonomy {
             public const SLUG = 'test_taxonomy';
             public string $singularLabel = 'Test Category';
             public string $pluralLabel = 'Test Categories';
             protected bool $isHierarchical = true;
-            
+
             // Expose protected method for testing
             public function getDefaultArgsPublic(): array
             {

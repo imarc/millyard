@@ -9,7 +9,8 @@ use Imarc\Millyard\Services\Container;
 
 class Registrar
 {
-    use DiscoversClasses, RegistersHooks;
+    use DiscoversClasses;
+    use RegistersHooks;
 
     public function __construct(private Container $container)
     {
@@ -28,7 +29,7 @@ class Registrar
     {
         $job = $this->container->get($jobClass);
         $this->addAction($job->getName(), [$job, 'handle'], 10, 3);
-        
+
         do_action('millyard_job_registered', $jobClass);
     }
 }

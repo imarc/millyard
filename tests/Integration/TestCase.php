@@ -6,7 +6,7 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as YoastTestCase;
 
 /**
  * Base test case for integration tests.
- * 
+ *
  * This class extends Yoast's WP Test Utils TestCase to provide
  * a WordPress environment for integration testing.
  */
@@ -18,7 +18,7 @@ abstract class TestCase extends YoastTestCase
     public function set_up(): void
     {
         parent::set_up();
-        
+
         // Additional setup for Millyard-specific tests
         $this->setUpMillyardEnvironment();
     }
@@ -37,19 +37,19 @@ abstract class TestCase extends YoastTestCase
     protected function setUpMillyardEnvironment(): void
     {
         // Mock theme directory structure
-        if (!defined('ABSPATH')) {
+        if (! defined('ABSPATH')) {
             define('ABSPATH', '/tmp/wordpress/');
         }
-        
+
         // Set up any Millyard-specific WordPress hooks or filters
-        add_filter('wp_get_environment_type', function() {
+        add_filter('wp_get_environment_type', function () {
             return 'testing';
         });
     }
 
     /**
      * Helper method to create a test post.
-     * 
+     *
      * @param array $args Post arguments
      * @return int Post ID
      */
@@ -61,15 +61,15 @@ abstract class TestCase extends YoastTestCase
             'post_status' => 'publish',
             'post_type' => 'post',
         ];
-        
+
         $args = wp_parse_args($args, $defaults);
-        
+
         return $this->factory()->post->create($args);
     }
 
     /**
      * Helper method to create a test taxonomy term.
-     * 
+     *
      * @param string $taxonomy Taxonomy name
      * @param array $args Term arguments
      * @return int Term ID
@@ -80,15 +80,15 @@ abstract class TestCase extends YoastTestCase
             'name' => 'Test Term',
             'slug' => 'test-term',
         ];
-        
+
         $args = wp_parse_args($args, $defaults);
-        
+
         return $this->factory()->term->create(array_merge($args, ['taxonomy' => $taxonomy]));
     }
 
     /**
      * Helper method to create a test user.
-     * 
+     *
      * @param array $args User arguments
      * @return int User ID
      */
@@ -99,9 +99,9 @@ abstract class TestCase extends YoastTestCase
             'user_email' => 'test@example.com',
             'role' => 'subscriber',
         ];
-        
+
         $args = wp_parse_args($args, $defaults);
-        
+
         return $this->factory()->user->create($args);
     }
 }

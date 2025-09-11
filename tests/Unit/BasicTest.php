@@ -15,9 +15,9 @@ class BasicTest extends TestCase
     public function test_brain_monkey_is_working(): void
     {
         \Brain\Monkey\Functions\when('test_function')->justReturn('mocked_value');
-        
+
         $result = test_function();
-        
+
         $this->assertEquals('mocked_value', $result);
     }
 
