@@ -21,6 +21,29 @@ class RouterFunctionalTest extends TestCase
         $instanceProperty = $reflection->getProperty('instance');
         $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
+
+        // Mock the Container to return necessary dependencies
+        $this->setUpContainerMocks();
+    }
+
+    private function setUpContainerMocks(): void
+    {
+        // Mock Request object
+        $mockRequest = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
+
+        // Mock Container
+        $mockContainer = \Mockery::mock('League\Container\Container');
+        $mockContainer->shouldReceive('get')
+            ->with('Symfony\Component\HttpFoundation\Request')
+            ->andReturn($mockRequest);
+        $mockContainer->shouldReceive('delegate')->andReturnSelf();
+        $mockContainer->shouldReceive('addServiceProvider')->andReturnSelf();
+
+        // Mock Container::getInstance to return our mock
+        $containerReflection = new \ReflectionClass('Imarc\Millyard\Services\Container');
+        $containerInstance = $containerReflection->getProperty('instance');
+        $containerInstance->setAccessible(true);
+        $containerInstance->setValue(null, $mockContainer);
     }
 
     public function test_router_can_register_simple_routes(): void
