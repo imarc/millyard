@@ -5,7 +5,6 @@ namespace Imarc\Millyard\Routing;
 use Imarc\Millyard\Services\Container;
 use League\Container\Container as BaseContainer;
 use ReflectionFunction;
-use ReflectionMethod;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,6 +33,7 @@ class Router
         if (self::$instance === null) {
             self::$instance = new Router();
         }
+
         return self::$instance;
     }
 
@@ -179,7 +179,7 @@ class Router
             $middleware = $config['middleware'] ?? [];
 
             if ($pattern === $route || ($params = $this->extractParameters($pattern, $route)) !== false) {
-                if (!isset($params)) {
+                if (! isset($params)) {
                     $params = [];
                 }
 
@@ -215,7 +215,7 @@ class Router
             function (Request $request, array $params) use ($action): Response {
                 $result = call_user_func($action, $params, $request);
 
-                if (!$result instanceof Response) {
+                if (! $result instanceof Response) {
                     return new Response((string) $result);
                 }
 
@@ -250,6 +250,7 @@ class Router
         if (preg_match($regex, $route, $matches)) {
             // Remove the full match
             array_shift($matches);
+
             // Combine parameter names with their values
             return array_combine($paramNames, $matches);
         }
@@ -306,6 +307,7 @@ class Router
         return function ($routeParams) use ($controller, $method, $class) {
             $reflection = new \ReflectionMethod($controller, $method);
             $args = $this->resolveParameters($reflection->getParameters(), $routeParams, $class . '::' . $method);
+
             return $controller->$method(...$args);
         };
     }
@@ -319,8 +321,10 @@ class Router
     private function resolveCallable(callable $callable): callable
     {
         $reflection = new ReflectionFunction($callable);
+
         return function ($routeParams) use ($callable, $reflection) {
             $args = $this->resolveParameters($reflection->getParameters(), $routeParams, 'closure');
+
             return $callable(...$args);
         };
     }
@@ -347,8 +351,9 @@ class Router
                 $value = $routeParams[$paramName];
 
                 // If there's no type hint, pass as string
-                if (!$type) {
+                if (! $type) {
                     $args[$index] = $value;
+
                     continue;
                 }
 
@@ -358,19 +363,24 @@ class Router
                 switch ($typeName) {
                     case 'int':
                         $value = (int) $value;
+
                         break;
                     case 'float':
                         $value = (float) $value;
+
                         break;
                     case 'bool':
                         $value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+
                         break;
                     case 'array':
                         $value = explode(',', $value);
+
                         break;
                 }
 
                 $args[$index] = $value;
+
                 continue;
             }
 

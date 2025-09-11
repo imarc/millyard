@@ -1,2 +1,6 @@
 /vendor/
+.phpunit.result.cache
 .DS_Store
+coverage/
+composer.lock
+*.log/.php-cs-fixer.cache

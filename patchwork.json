@@ -1,0 +1,9 @@
+{
+    "redefinable-internals": [
+        "session_id",
+        "file_exists",
+        "microtime",
+        "error_log",
+        "function_exists"
+    ]
+}

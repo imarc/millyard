@@ -24,7 +24,7 @@ trait DiscoversClasses
             $relativePath = str_replace('/', '\\', $relativePath);
             $className = $namespace . str_replace('.php', '', $relativePath);
 
-            if (!class_exists($className)) {
+            if (! class_exists($className)) {
                 continue;
             }
 
@@ -34,7 +34,7 @@ trait DiscoversClasses
                 continue;
             }
 
-            if (!empty($reflection->getAttributes($attribute))) {
+            if (! empty($reflection->getAttributes($attribute))) {
                 $classes[] = $className;
             }
         }
