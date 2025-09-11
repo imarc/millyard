@@ -12,20 +12,20 @@ abstract class AbstractRouteHooks implements HooksInterface
     use RegistersHooks;
 
     private static $capturedHeaders = [];
-    
+
     private static $headersCaptured = false;
-    
+
     // Default headers that commonly get lost during server rewrites
     protected const HEADERS_TO_PRESERVE = [
         'Authorization',
         'X-API-Key',
-        'X-Auth-Token', 
+        'X-Auth-Token',
         'X-Access-Token',
         'X-Requested-With',
         'Content-Type',
         'Accept',
         'X-CSRF-Token',
-        'X-XSRF-Token'
+        'X-XSRF-Token',
     ];
 
     public function __construct(protected Router $router, protected Request $request)
@@ -78,6 +78,7 @@ abstract class AbstractRouteHooks implements HooksInterface
     {
         $this->addFilter('query_vars', function ($vars) {
             $vars[] = 'custom_route';
+
             return $vars;
         });
     }
@@ -117,7 +118,7 @@ abstract class AbstractRouteHooks implements HooksInterface
     public function handleCustomRoutes(): void
     {
         $custom_route = get_query_var('custom_route');
-        if (!$custom_route) {
+        if (! $custom_route) {
             return;
         }
 
@@ -157,43 +158,44 @@ abstract class AbstractRouteHooks implements HooksInterface
             return;
         }
         self::$headersCaptured = true;
-        
+
         // Try multiple sources for headers
         $this->captureFromServerVars();
         $this->captureFromRequest();
         $this->captureFromGetAllHeaders();
     }
-    
+
     private function captureFromServerVars(): void
     {
         foreach ($this->getHeadersToPreserve() as $header) {
-            if (!empty(self::$capturedHeaders[$header])) {
+            if (! empty(self::$capturedHeaders[$header])) {
                 continue; // Already captured
             }
-            
+
             // Convert header name to $_SERVER format (e.g., Authorization -> HTTP_AUTHORIZATION)
             $serverKey = 'HTTP_' . strtoupper(str_replace('-', '_', $header));
             $redirectKey = 'REDIRECT_' . $serverKey;
-            
-            if (isset($_SERVER[$serverKey]) && !empty($_SERVER[$serverKey])) {
+
+            if (isset($_SERVER[$serverKey]) && ! empty($_SERVER[$serverKey])) {
                 self::$capturedHeaders[$header] = $_SERVER[$serverKey];
-            } elseif (isset($_SERVER[$redirectKey]) && !empty($_SERVER[$redirectKey])) {
+            } elseif (isset($_SERVER[$redirectKey]) && ! empty($_SERVER[$redirectKey])) {
                 self::$capturedHeaders[$header] = $_SERVER[$redirectKey];
             }
         }
-        
+
         // Special cases for Authorization header
         if (empty(self::$capturedHeaders['Authorization'])) {
             $authSources = ['PHP_AUTH_USER', 'PHP_AUTH_PW', 'REMOTE_USER', 'AUTH_TYPE'];
             foreach ($authSources as $source) {
-                if (isset($_SERVER[$source]) && !empty($_SERVER[$source])) {
+                if (isset($_SERVER[$source]) && ! empty($_SERVER[$source])) {
                     self::$capturedHeaders['Authorization'] = $_SERVER[$source];
+
                     break;
                 }
             }
         }
     }
-    
+
     private function captureFromRequest(): void
     {
         foreach ($this->getHeadersToPreserve() as $header) {
@@ -202,19 +204,19 @@ abstract class AbstractRouteHooks implements HooksInterface
             }
         }
     }
-    
+
     private function captureFromGetAllHeaders(): void
     {
-        if (!function_exists('getallheaders')) {
+        if (! function_exists('getallheaders')) {
             return;
         }
-        
+
         $headers = getallheaders();
         foreach ($this->getHeadersToPreserve() as $header) {
-            if (!empty(self::$capturedHeaders[$header])) {
+            if (! empty(self::$capturedHeaders[$header])) {
                 continue; // Already captured
             }
-            
+
             // Check both exact case and lowercase
             if (isset($headers[$header])) {
                 self::$capturedHeaders[$header] = $headers[$header];
@@ -228,7 +230,7 @@ abstract class AbstractRouteHooks implements HooksInterface
     {
         return self::$capturedHeaders[$headerName] ?? null;
     }
-    
+
     public static function getAllCapturedHeaders(): array
     {
         return self::$capturedHeaders;
@@ -242,7 +244,7 @@ abstract class AbstractRouteHooks implements HooksInterface
                 // Write to $_SERVER so new Request instances will pick it up
                 $serverKey = 'HTTP_' . strtoupper(str_replace('-', '_', $header));
                 $_SERVER[$serverKey] = $value;
-                
+
                 // Also update the current Request instance
                 $this->request->headers->set($header, $value);
             }

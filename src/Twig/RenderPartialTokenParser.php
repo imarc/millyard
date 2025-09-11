@@ -3,9 +3,9 @@
 namespace Imarc\Millyard\Twig;
 
 use Twig\Node\Expression\ArrayExpression;
-use Twig\TokenParser\AbstractTokenParser;
-use Twig\Token;
 use Twig\Node\Node;
+use Twig\Token;
+use Twig\TokenParser\AbstractTokenParser;
 
 /**
  * Token parser for the {% render_partial %} tag.
