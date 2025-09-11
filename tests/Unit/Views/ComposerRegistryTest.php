@@ -179,7 +179,7 @@ class ComposerRegistryTest extends TestCase
     {
         $composer1 = new class () extends Composer {
             public array $views = ['template1.twig'];
-            
+
             public function withContext(): array
             {
                 return ['composer1_data' => 'value1'];
@@ -188,7 +188,7 @@ class ComposerRegistryTest extends TestCase
 
         $composer2 = new class () extends Composer {
             public array $views = ['template2.twig'];
-            
+
             public function withContext(): array
             {
                 return ['composer2_data' => 'value2'];
@@ -210,14 +210,14 @@ class ComposerRegistryTest extends TestCase
         // Test filtering for template1
         $originalData = ['original' => 'data'];
         $filteredData1 = $registry->filterDataForComposers($originalData, 'template1.twig');
-        
+
         $this->assertEquals('data', $filteredData1['original']);
         $this->assertEquals('value1', $filteredData1['composer1_data']);
         $this->assertArrayNotHasKey('composer2_data', $filteredData1);
 
         // Test filtering for template2
         $filteredData2 = $registry->filterDataForComposers($originalData, 'template2.twig');
-        
+
         $this->assertEquals('data', $filteredData2['original']);
         $this->assertEquals('value2', $filteredData2['composer2_data']);
         $this->assertArrayNotHasKey('composer1_data', $filteredData2);
