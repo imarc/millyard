@@ -3,6 +3,7 @@
         "session_id",
         "file_exists",
         "microtime",
-        "error_log"
+        "error_log",
+        "function_exists"
     ]
 }
