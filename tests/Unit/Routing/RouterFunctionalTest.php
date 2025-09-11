@@ -7,7 +7,7 @@ use Imarc\Millyard\Tests\Unit\TestCase;
 
 /**
  * Functional tests for Router class.
- * 
+ *
  * These tests verify Router functionality through public interface.
  */
 class RouterFunctionalTest extends TestCase
@@ -15,7 +15,7 @@ class RouterFunctionalTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Reset the singleton instance before each test
         $reflection = new \ReflectionClass(Router::class);
         $instanceProperty = $reflection->getProperty('instance');
@@ -26,11 +26,11 @@ class RouterFunctionalTest extends TestCase
     public function test_router_can_register_simple_routes(): void
     {
         $router = Router::getInstance();
-        
+
         $getAction = function () {
             return 'GET response';
         };
-        
+
         $postAction = function () {
             return 'POST response';
         };
@@ -40,12 +40,12 @@ class RouterFunctionalTest extends TestCase
         $router->post('/test', $postAction);
 
         $routes = $router->getRoutes();
-        
+
         // Verify GET route
         $this->assertArrayHasKey('GET', $routes);
         $this->assertArrayHasKey('/test', $routes['GET']);
         $this->assertEquals($getAction, $routes['GET']['/test']['action']);
-        
+
         // Verify POST route
         $this->assertArrayHasKey('POST', $routes);
         $this->assertArrayHasKey('/test', $routes['POST']);
@@ -55,7 +55,7 @@ class RouterFunctionalTest extends TestCase
     public function test_router_can_register_routes_with_parameters(): void
     {
         $router = Router::getInstance();
-        
+
         $action = function ($id, $slug) {
             return "User $id, Post $slug";
         };
@@ -63,7 +63,7 @@ class RouterFunctionalTest extends TestCase
         $router->get('/users/{id}/posts/{slug}', $action);
 
         $routes = $router->getRoutes();
-        
+
         $this->assertArrayHasKey('GET', $routes);
         $this->assertArrayHasKey('/users/{id}/posts/{slug}', $routes['GET']);
         $this->assertEquals($action, $routes['GET']['/users/{id}/posts/{slug}']['action']);
@@ -72,7 +72,7 @@ class RouterFunctionalTest extends TestCase
     public function test_router_normalizes_paths(): void
     {
         $router = Router::getInstance();
-        
+
         $action = function () {
             return 'response';
         };
@@ -82,11 +82,11 @@ class RouterFunctionalTest extends TestCase
         $router->get('/another-path///', $action); // Multiple slashes
 
         $routes = $router->getRoutes();
-        
+
         // Should be normalized
         $this->assertArrayHasKey('/test-path', $routes['GET']);
         $this->assertArrayNotHasKey('/test-path/', $routes['GET']);
-        
+
         // Root path should keep its slash
         $router->get('/', $action);
         $routes = $router->getRoutes(); // Get fresh routes after adding root
@@ -96,7 +96,7 @@ class RouterFunctionalTest extends TestCase
     public function test_router_supports_method_chaining(): void
     {
         $router = Router::getInstance();
-        
+
         $action = function () {
             return 'response';
         };
@@ -109,7 +109,7 @@ class RouterFunctionalTest extends TestCase
             ->setDefaultMiddleware(['TestMiddleware']);
 
         $this->assertSame($router, $result);
-        
+
         $routes = $router->getRoutes();
         $this->assertArrayHasKey('/test1', $routes['GET']);
         $this->assertArrayHasKey('/test2', $routes['POST']);
@@ -119,7 +119,7 @@ class RouterFunctionalTest extends TestCase
     public function test_router_handles_all_http_methods(): void
     {
         $router = Router::getInstance();
-        
+
         $action = function () {
             return 'response';
         };
@@ -132,7 +132,7 @@ class RouterFunctionalTest extends TestCase
         $router->patch('/resource', $action);
 
         $routes = $router->getRoutes();
-        
+
         $httpMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
         foreach ($httpMethods as $method) {
             $this->assertArrayHasKey($method, $routes, "Routes should contain {$method} method");
@@ -143,11 +143,11 @@ class RouterFunctionalTest extends TestCase
     public function test_multiple_routes_per_method(): void
     {
         $router = Router::getInstance();
-        
+
         $action1 = function () {
             return 'response1';
         };
-        
+
         $action2 = function () {
             return 'response2';
         };
@@ -157,7 +157,7 @@ class RouterFunctionalTest extends TestCase
         $router->get('/route2', $action2);
 
         $routes = $router->getRoutes();
-        
+
         $this->assertCount(2, $routes['GET']);
         $this->assertEquals($action1, $routes['GET']['/route1']['action']);
         $this->assertEquals($action2, $routes['GET']['/route2']['action']);
@@ -166,7 +166,7 @@ class RouterFunctionalTest extends TestCase
     public function test_routes_with_complex_patterns(): void
     {
         $router = Router::getInstance();
-        
+
         $action = function () {
             return 'response';
         };
@@ -184,7 +184,7 @@ class RouterFunctionalTest extends TestCase
         }
 
         $routes = $router->getRoutes();
-        
+
         foreach ($complexRoutes as $route) {
             $this->assertArrayHasKey($route, $routes['GET'], "Should have route: {$route}");
         }

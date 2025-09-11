@@ -31,7 +31,7 @@ class ContainerTest extends TestCase
         // Since Container is a singleton and might be affected by other tests,
         // let's just test that the method exists and is callable
         $this->assertTrue(method_exists(Container::class, 'getInstance'));
-        
+
         $container = Container::getInstance();
         $this->assertTrue(method_exists($container, 'get'));
         $this->assertTrue(is_callable([$container, 'get']));
@@ -40,11 +40,11 @@ class ContainerTest extends TestCase
     public function test_magic_call_delegates_to_instance(): void
     {
         $containerProxy = new Container();
-        
+
         // Test that calling methods on the proxy delegates to the singleton instance
         // We'll test with a method that exists on the BaseContainer
         $this->assertTrue(method_exists($containerProxy, '__call'));
-        
+
         // The magic call method should exist and be callable
         $this->assertTrue(is_callable([$containerProxy, 'has']));
     }

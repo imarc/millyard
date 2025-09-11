@@ -26,7 +26,7 @@ class DispatcherTest extends TestCase
         $dispatcher = new Dispatcher($mockContainer);
 
         $result = $dispatcher->args(['arg1', 'arg2', 'arg3']);
-        
+
         $this->assertSame($dispatcher, $result); // Should return self for chaining
     }
 
@@ -41,9 +41,9 @@ class DispatcherTest extends TestCase
             ->andReturn($mockJob);
 
         $dispatcher = new Dispatcher($mockContainer);
-        
+
         $result = $dispatcher->dispatch('TestJobClass');
-        
+
         $this->assertSame($dispatcher, $result); // Should return self for chaining
     }
 
@@ -57,7 +57,7 @@ class DispatcherTest extends TestCase
         $afterTime = time();
 
         $this->assertSame($dispatcher, $result); // Should return self for chaining
-        
+
         // We can't directly test the timestamp, but we can verify the method exists
         // and returns the dispatcher for chaining
     }
@@ -69,7 +69,7 @@ class DispatcherTest extends TestCase
 
         $timestamp = 1640995200; // Jan 1, 2022
         $result = $dispatcher->at($timestamp);
-        
+
         $this->assertSame($dispatcher, $result); // Should return self for chaining
     }
 
@@ -84,7 +84,7 @@ class DispatcherTest extends TestCase
         });
 
         $result = $dispatcher->at('+1 hour');
-        
+
         $this->assertSame($dispatcher, $result); // Should return self for chaining
     }
 
@@ -99,7 +99,7 @@ class DispatcherTest extends TestCase
             ->andReturn($mockJob);
 
         $dispatcher = new Dispatcher($mockContainer);
-        
+
         // Set up the dispatcher with job, args, and timing
         $dispatcher->dispatch('TestJobClass')
                   ->args(['arg1', 'arg2'])
@@ -125,7 +125,7 @@ class DispatcherTest extends TestCase
             ->andReturn($mockJob);
 
         $dispatcher = new Dispatcher($mockContainer);
-        
+
         // Set up the dispatcher
         $dispatcher->dispatch('TestJobClass')
                   ->args(['arg1', 'arg2']);
@@ -134,7 +134,7 @@ class DispatcherTest extends TestCase
         // In a real environment, this would call do_action with the job name and args
 
         $dispatcher->execute(false);
-        
+
         // Test passed if no exceptions were thrown
         $this->assertTrue(true);
     }
@@ -169,24 +169,24 @@ class DispatcherTest extends TestCase
             'args' => ['parameters' => 1, 'return' => 'static'],
             'execute' => ['parameters' => 0, 'return' => 'void'], // Has optional parameter
         ];
-        
+
         foreach ($methodSignatures as $method => $expected) {
             $reflection = new \ReflectionMethod(Dispatcher::class, $method);
-            
+
             if ($method === 'execute') {
                 // execute has optional parameter, so 0 required
                 $this->assertEquals(0, $reflection->getNumberOfRequiredParameters());
             } else {
                 $this->assertEquals(
-                    $expected['parameters'], 
+                    $expected['parameters'],
                     $reflection->getNumberOfRequiredParameters(),
                     "{$method} should require {$expected['parameters']} parameters"
                 );
             }
-            
+
             if ($expected['return'] !== 'void') {
                 $this->assertEquals(
-                    $expected['return'], 
+                    $expected['return'],
                     $reflection->getReturnType()->getName(),
                     "{$method} should return {$expected['return']}"
                 );
@@ -198,7 +198,7 @@ class DispatcherTest extends TestCase
     {
         $reflection = new \ReflectionMethod(Dispatcher::class, '__construct');
         $parameters = $reflection->getParameters();
-        
+
         $this->assertCount(1, $parameters);
         $this->assertEquals('container', $parameters[0]->getName());
         $this->assertEquals('Imarc\Millyard\Services\Container', $parameters[0]->getType()->getName());
@@ -208,7 +208,7 @@ class DispatcherTest extends TestCase
     {
         $reflection = new \ReflectionMethod(Dispatcher::class, 'execute');
         $parameters = $reflection->getParameters();
-        
+
         $this->assertCount(1, $parameters);
         $this->assertEquals('useQueue', $parameters[0]->getName());
         $this->assertTrue($parameters[0]->isDefaultValueAvailable());
@@ -219,19 +219,19 @@ class DispatcherTest extends TestCase
     {
         $reflection = new \ReflectionMethod(Dispatcher::class, 'at');
         $parameters = $reflection->getParameters();
-        
+
         $this->assertCount(1, $parameters);
         $this->assertEquals('time', $parameters[0]->getName());
-        
+
         // Check that it accepts string|int union type
         $type = $parameters[0]->getType();
         $this->assertInstanceOf(\ReflectionUnionType::class, $type);
-        
+
         $typeNames = [];
         foreach ($type->getTypes() as $unionType) {
             $typeNames[] = $unionType->getName();
         }
-        
+
         $this->assertContains('string', $typeNames);
         $this->assertContains('int', $typeNames);
     }

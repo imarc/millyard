@@ -2,7 +2,6 @@
 
 namespace Imarc\Millyard\Tests\Unit\Jobs;
 
-use Brain\Monkey;
 use Imarc\Millyard\Jobs\Dispatcher;
 use Imarc\Millyard\Jobs\Job;
 use Imarc\Millyard\Tests\Unit\TestCase;
@@ -28,7 +27,7 @@ class JobTest extends TestCase
     {
         $job = new class () extends Job {
             protected string $jobName = 'custom_job_name';
-            
+
             public function handle()
             {
                 return 'handled';
@@ -36,7 +35,7 @@ class JobTest extends TestCase
         };
 
         $name = $job->getName();
-        
+
         $this->assertEquals('custom_job_name', $name);
     }
 
@@ -50,7 +49,7 @@ class JobTest extends TestCase
         };
 
         $name = $job->getName();
-        
+
         // Should generate a name from the anonymous class
         // The exact name will be complex due to anonymous class, but should be a string
         $this->assertIsString($name);
@@ -66,15 +65,16 @@ class JobTest extends TestCase
             {
                 // Simulate a class name for testing
                 $originalClass = static::class;
-                
+
                 // Create a test class name
                 $testClassName = 'App\\Jobs\\SendEmailNotification';
-                
+
                 // Apply the same logic as generateName()
                 $name = str_replace('App\\Jobs\\', '', $testClassName);
+
                 return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
             }
-            
+
             public function handle()
             {
                 return 'handled';
@@ -82,7 +82,7 @@ class JobTest extends TestCase
         };
 
         $generatedName = $job->testGenerateName();
-        
+
         $this->assertEquals('send_email_notification', $generatedName);
     }
 
@@ -112,7 +112,7 @@ class JobTest extends TestCase
         $instanceProperty->setValue(null, $mockContainer);
 
         $result = $jobClass::dispatch('arg1', 'arg2');
-        
+
         $this->assertSame($mockDispatcher, $result);
     }
 
@@ -164,7 +164,7 @@ class JobTest extends TestCase
             // Simulate the generateName logic
             $name = str_replace('App\\Jobs\\', '', $className);
             $result = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
-            
+
             $this->assertEquals($expectedName, $result, "Class {$className} should generate name {$expectedName}");
         }
     }
@@ -172,9 +172,9 @@ class JobTest extends TestCase
     public function test_job_has_required_abstract_method(): void
     {
         $reflection = new \ReflectionClass(Job::class);
-        
+
         $this->assertTrue($reflection->isAbstract(), 'Job class should be abstract');
-        
+
         // Job should require subclasses to implement a handle method
         // We can't test for abstract methods directly, but we can verify
         // that concrete implementations must have a handle method
@@ -184,14 +184,14 @@ class JobTest extends TestCase
                 return "Processed: $data";
             }
         };
-        
+
         $this->assertTrue(method_exists($job, 'handle'), 'Job implementations should have handle method');
     }
 
     public function test_job_dispatch_is_static_method(): void
     {
         $reflection = new \ReflectionMethod(Job::class, 'dispatch');
-        
+
         $this->assertTrue($reflection->isStatic(), 'dispatch method should be static');
         $this->assertTrue($reflection->isPublic(), 'dispatch method should be public');
         $this->assertEquals('Imarc\Millyard\Jobs\Dispatcher', $reflection->getReturnType()->getName());

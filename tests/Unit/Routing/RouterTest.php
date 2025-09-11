@@ -13,7 +13,7 @@ class RouterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Reset the singleton instance before each test
         $reflection = new \ReflectionClass(Router::class);
         $instanceProperty = $reflection->getProperty('instance');
@@ -35,7 +35,7 @@ class RouterTest extends TestCase
         // We'll test this without the complex container dependencies
         $this->assertTrue(method_exists(Router::class, 'get'));
         $this->assertTrue(method_exists(Router::class, 'getRoutes'));
-        
+
         // Test that the method signature is correct
         $reflection = new \ReflectionMethod(Router::class, 'get');
         $this->assertEquals(2, $reflection->getNumberOfRequiredParameters());
@@ -46,10 +46,10 @@ class RouterTest extends TestCase
     public function test_all_http_methods_are_available(): void
     {
         $httpMethods = ['get', 'post', 'put', 'delete', 'patch'];
-        
+
         foreach ($httpMethods as $method) {
             $this->assertTrue(method_exists(Router::class, $method), "Router should have {$method} method");
-            
+
             $reflection = new \ReflectionMethod(Router::class, $method);
             $this->assertEquals(2, $reflection->getNumberOfRequiredParameters(), "{$method} should require 2 parameters");
             $this->assertEquals('static', $reflection->getReturnType()->getName(), "{$method} should return static for chaining");
@@ -59,7 +59,7 @@ class RouterTest extends TestCase
     public function test_middleware_method_exists(): void
     {
         $this->assertTrue(method_exists(Router::class, 'middleware'));
-        
+
         $reflection = new \ReflectionMethod(Router::class, 'middleware');
         $this->assertEquals(1, $reflection->getNumberOfRequiredParameters());
         $this->assertEquals('void', $reflection->getReturnType()->getName());
@@ -68,7 +68,7 @@ class RouterTest extends TestCase
     public function test_set_default_middleware_method_exists(): void
     {
         $this->assertTrue(method_exists(Router::class, 'setDefaultMiddleware'));
-        
+
         $reflection = new \ReflectionMethod(Router::class, 'setDefaultMiddleware');
         $this->assertEquals(1, $reflection->getNumberOfRequiredParameters());
         $this->assertEquals('static', $reflection->getReturnType()->getName());
@@ -77,7 +77,7 @@ class RouterTest extends TestCase
     public function test_handle_request_method_exists(): void
     {
         $this->assertTrue(method_exists(Router::class, 'handleRequest'));
-        
+
         $reflection = new \ReflectionMethod(Router::class, 'handleRequest');
         $this->assertEquals(2, $reflection->getNumberOfRequiredParameters());
         $this->assertEquals('void', $reflection->getReturnType()->getName());
@@ -88,7 +88,7 @@ class RouterTest extends TestCase
         $expectedMethods = [
             'getInstance',
             'get',
-            'post', 
+            'post',
             'put',
             'delete',
             'patch',
@@ -97,7 +97,7 @@ class RouterTest extends TestCase
             'handleRequest',
             'getRoutes',
         ];
-        
+
         foreach ($expectedMethods as $method) {
             $this->assertTrue(method_exists(Router::class, $method), "Router should have {$method} method");
         }
@@ -116,19 +116,19 @@ class RouterTest extends TestCase
             'handleRequest' => ['parameters' => 2, 'return' => 'void'],
             'getRoutes' => ['parameters' => 0, 'return' => 'array'],
         ];
-        
+
         foreach ($methodSignatures as $method => $expected) {
             $reflection = new \ReflectionMethod(Router::class, $method);
-            
+
             $this->assertEquals(
-                $expected['parameters'], 
+                $expected['parameters'],
                 $reflection->getNumberOfRequiredParameters(),
                 "{$method} should require {$expected['parameters']} parameters"
             );
-            
+
             if ($expected['return'] !== 'void') {
                 $this->assertEquals(
-                    $expected['return'], 
+                    $expected['return'],
                     $reflection->getReturnType()->getName(),
                     "{$method} should return {$expected['return']}"
                 );
@@ -139,10 +139,10 @@ class RouterTest extends TestCase
     public function test_router_properties_are_properly_encapsulated(): void
     {
         $reflection = new \ReflectionClass(Router::class);
-        
+
         // Test that important properties are private
         $privateProperties = ['instance', 'routes', 'container', 'request', 'defaultMiddleware', 'currentPath'];
-        
+
         foreach ($privateProperties as $property) {
             $this->assertTrue($reflection->hasProperty($property), "Router should have {$property} property");
             $prop = $reflection->getProperty($property);
@@ -154,7 +154,7 @@ class RouterTest extends TestCase
     {
         $reflection = new \ReflectionClass(Router::class);
         $constructor = $reflection->getConstructor();
-        
+
         $this->assertTrue($constructor->isPrivate(), 'Constructor should be private for singleton pattern');
     }
 }

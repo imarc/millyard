@@ -2,7 +2,6 @@
 
 namespace Imarc\Millyard\Tests\Unit\Jobs;
 
-use Brain\Monkey;
 use Imarc\Millyard\Jobs\Job;
 use Imarc\Millyard\Jobs\Registrar;
 use Imarc\Millyard\Tests\Unit\TestCase;
@@ -24,7 +23,7 @@ class RegistrarTest extends TestCase
     {
         $reflection = new \ReflectionClass(Registrar::class);
         $traits = $reflection->getTraitNames();
-        
+
         $this->assertContains('Imarc\Millyard\Concerns\DiscoversClasses', $traits);
         $this->assertContains('Imarc\Millyard\Concerns\RegistersHooks', $traits);
     }
@@ -32,11 +31,11 @@ class RegistrarTest extends TestCase
     public function test_register_jobs_method_exists_with_correct_signature(): void
     {
         $reflection = new \ReflectionMethod(Registrar::class, 'registerJobs');
-        
+
         $this->assertTrue($reflection->isPublic());
         $this->assertEquals(1, $reflection->getNumberOfParameters());
         $this->assertEquals('void', $reflection->getReturnType()->getName());
-        
+
         $parameters = $reflection->getParameters();
         $this->assertEquals('path', $parameters[0]->getName());
         $this->assertTrue($parameters[0]->isDefaultValueAvailable());
@@ -46,11 +45,11 @@ class RegistrarTest extends TestCase
     public function test_register_job_method_exists_with_correct_signature(): void
     {
         $reflection = new \ReflectionMethod(Registrar::class, 'registerJob');
-        
+
         $this->assertTrue($reflection->isPublic());
         $this->assertEquals(1, $reflection->getNumberOfRequiredParameters());
         $this->assertEquals('void', $reflection->getReturnType()->getName());
-        
+
         $parameters = $reflection->getParameters();
         $this->assertEquals('jobClass', $parameters[0]->getName());
         $this->assertEquals('string', $parameters[0]->getType()->getName());
@@ -68,7 +67,7 @@ class RegistrarTest extends TestCase
 
         $registrar = new class ($mockContainer) extends Registrar {
             public $addActionCalls = [];
-            
+
             public function addAction($hook, $callback, $priority = 10, $acceptedArgs = 1): void
             {
                 $this->addActionCalls[] = [
@@ -97,7 +96,7 @@ class RegistrarTest extends TestCase
     {
         $reflection = new \ReflectionMethod(Registrar::class, '__construct');
         $parameters = $reflection->getParameters();
-        
+
         $this->assertCount(1, $parameters);
         $this->assertEquals('container', $parameters[0]->getName());
         $this->assertEquals('Imarc\Millyard\Services\Container', $parameters[0]->getType()->getName());
@@ -107,11 +106,11 @@ class RegistrarTest extends TestCase
     {
         $mockContainer = \Mockery::mock('Imarc\Millyard\Services\Container');
         $registrar = new Registrar($mockContainer);
-        
+
         // Test that the method exists and is callable
         $this->assertTrue(method_exists($registrar, 'registerJobs'));
         $this->assertTrue(is_callable([$registrar, 'registerJobs']));
-        
+
         // Test method signature
         $reflection = new \ReflectionMethod(Registrar::class, 'registerJobs');
         $this->assertTrue($reflection->isPublic());
@@ -121,7 +120,7 @@ class RegistrarTest extends TestCase
     {
         $reflection = new \ReflectionMethod(Registrar::class, 'registerJobs');
         $parameters = $reflection->getParameters();
-        
+
         $this->assertCount(1, $parameters);
         $this->assertEquals('path', $parameters[0]->getName());
         $this->assertTrue($parameters[0]->isDefaultValueAvailable());
@@ -133,7 +132,7 @@ class RegistrarTest extends TestCase
         // Create a concrete job for testing
         $testJob = new class () extends Job {
             protected string $jobName = 'integration_test_job';
-            
+
             public function handle($data)
             {
                 return "Processed: $data";
@@ -147,7 +146,7 @@ class RegistrarTest extends TestCase
 
         $registrar = new class ($mockContainer) extends Registrar {
             public $hookRegistrations = [];
-            
+
             public function addAction($hook, $callback, $priority = 10, $acceptedArgs = 1): void
             {
                 $this->hookRegistrations[] = [
