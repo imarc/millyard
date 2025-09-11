@@ -1,9 +1,9 @@
 {
     "name": "imarc/millyard",
     "type": "library",
-    "autoload": {
+    "autoload-dev": {
         "psr-4": {
-            "Imarc\\Millyard\\": "src/"
+            "Imarc\\Millyard\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -20,12 +20,23 @@
         "timber/timber": "^2.3"
     },
     "require-dev": {
-      "yoast/wp-test-utils": "^1.0",
-      "friendsofphp/php-cs-fixer": "^3.64"
+        "yoast/wp-test-utils": "^1.0",
+        "friendsofphp/php-cs-fixer": "^3.64"
     },
-    "files": [
-      "src/helpers.php"
-    ],
+    "autoload": {
+        "psr-4": {
+            "Imarc\\Millyard\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite=Unit",
+        "test:integration": "phpunit --testsuite=Integration",
+        "test:coverage": "phpunit --coverage-html coverage"
+    },
     "config": {
         "allow-plugins": {
             "roots/wordpress-core-installer": true
