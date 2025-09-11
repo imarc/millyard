@@ -7,7 +7,7 @@ Millyard is the foundational engine behind [Mill 4, our modern WordPress starter
 
 ## Testing
 
-This project includes a comprehensive test suite with **67 tests** and **200 assertions**.
+This project includes a comprehensive test suite.
 
 ```bash
 # Run all tests
