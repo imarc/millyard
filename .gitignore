@@ -1,6 +1,7 @@
 /vendor/
 .phpunit.result.cache
 .DS_Store
+.vscode/
 coverage/
 composer.lock
 *.log/

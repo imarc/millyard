@@ -9,7 +9,7 @@ trait DiscoversClasses
     private function discoverClassesForAttribute(string $attribute, string $pathSegment): array
     {
         $directory = sprintf('%s/app/%s', get_template_directory(), trim($pathSegment, '/'));
-        $namespace = sprintf('\\App\\%s\\', $pathSegment);
+        $namespace = sprintf('App\\%s\\', $pathSegment);
         $classes = [];
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($directory)
