@@ -34,9 +34,17 @@ if (! function_exists('is_hmr')) {
         $port = $parsedUrl['port'] ?? 5173;
 
         // Use a socket connection check (faster than HTTP request)
-        $connection = @fsockopen($host, $port, $errno, $errstr, 0.5);
+        // Allow mocking in test environment
+        if (isset($GLOBALS['__fsockopen_mock_return'])) {
+            $connection = $GLOBALS['__fsockopen_mock_return'];
+        } else {
+            $connection = @fsockopen($host, $port, $errno, $errstr, 0.5);
+        }
+
         if ($connection) {
-            fclose($connection);
+            if (is_resource($connection)) {
+                fclose($connection);
+            }
 
             return true;
         }

@@ -44,6 +44,9 @@ abstract class TestCase extends BaseTestCase
             $this->tempConfigFile = null;
         }
 
+        // Clean up global mock variables
+        unset($GLOBALS['__fsockopen_mock_return']);
+
         Monkey\tearDown();
         parent::tearDown();
     }
@@ -136,5 +139,19 @@ abstract class TestCase extends BaseTestCase
         foreach ($keys as $key) {
             unset($_ENV[$key]);
         }
+    }
+
+    /**
+     * Mock fsockopen function for testing.
+     * Uses a global variable that can be checked in the helper function.
+     * Note: This requires the helper to check the global variable in test mode.
+     *
+     * @param resource|false $returnValue The value to return from fsockopen
+     */
+    protected function mockFsockopen($returnValue): void
+    {
+        // Store the mock return value in a global variable
+        // The helper function should check this in test mode
+        $GLOBALS['__fsockopen_mock_return'] = $returnValue;
     }
 }

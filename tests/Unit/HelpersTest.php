@@ -14,9 +14,19 @@ class HelpersTest extends TestCase
         // Create a real temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'hot_test_');
 
+        $this->mockConfigFile(['vite' => ['host' => 'http://localhost:5173']]);
+        $tempConfigFile = $this->tempConfigFile;
+
         Monkey\Functions\when('wp_get_environment_type')->justReturn('production');
-        Monkey\Functions\when('get_theme_file_path')->alias(function ($path) use ($tempFile) {
-            return $path === '.hot' ? $tempFile : '/tmp/theme/' . ltrim($path, '/');
+        Monkey\Functions\when('get_theme_file_path')->alias(function ($path) use ($tempFile, $tempConfigFile) {
+            if ($path === '.hot') {
+                return $tempFile;
+            }
+            if ($path === 'app/config.php') {
+                return $tempConfigFile;
+            }
+
+            return '/tmp/theme/' . ltrim($path, '/');
         });
 
         $result = is_hmr();
@@ -31,9 +41,19 @@ class HelpersTest extends TestCase
     {
         $nonExistentFile = '/tmp/definitely_does_not_exist_' . uniqid();
 
+        $this->mockConfigFile(['vite' => ['host' => 'http://localhost:5173']]);
+        $tempConfigFile = $this->tempConfigFile;
+
         Monkey\Functions\when('wp_get_environment_type')->justReturn('development');
-        Monkey\Functions\when('get_theme_file_path')->alias(function ($path) use ($nonExistentFile) {
-            return $path === '.hot' ? $nonExistentFile : '/tmp/theme/' . ltrim($path, '/');
+        Monkey\Functions\when('get_theme_file_path')->alias(function ($path) use ($nonExistentFile, $tempConfigFile) {
+            if ($path === '.hot') {
+                return $nonExistentFile;
+            }
+            if ($path === 'app/config.php') {
+                return $tempConfigFile;
+            }
+
+            return '/tmp/theme/' . ltrim($path, '/');
         });
 
         $this->assertFalse(is_hmr());
@@ -44,15 +64,35 @@ class HelpersTest extends TestCase
         // Create a real temporary file
         $tempFile = tempnam(sys_get_temp_dir(), 'hot_test_');
 
+        $this->mockConfigFile(['vite' => ['host' => 'http://localhost:5173']]);
+        $tempConfigFile = $this->tempConfigFile;
+
         Monkey\Functions\when('wp_get_environment_type')->justReturn('development');
-        Monkey\Functions\when('get_theme_file_path')->alias(function ($path) use ($tempFile) {
-            return $path === '.hot' ? $tempFile : '/tmp/theme/' . ltrim($path, '/');
+        Monkey\Functions\when('get_theme_file_path')->alias(function ($path) use ($tempFile, $tempConfigFile) {
+            if ($path === '.hot') {
+                return $tempFile;
+            }
+            if ($path === 'app/config.php') {
+                return $tempConfigFile;
+            }
+
+            return '/tmp/theme/' . ltrim($path, '/');
         });
+
+        // Mock fsockopen to return a successful connection
+        // The helper will close the connection if it's a resource
+        $mockConnection = fopen('php://memory', 'r+');
+        $this->mockFsockopen($mockConnection);
 
         $result = is_hmr();
 
-        // Clean up
-        unlink($tempFile);
+        // Clean up - the helper already closed the connection, so we don't need to close it again
+        // Clean up the .hot file if it still exists (it shouldn't be deleted since connection succeeded)
+        if (file_exists($tempFile)) {
+            @unlink($tempFile);
+        }
+        // Clean up the global mock
+        unset($GLOBALS['__fsockopen_mock_return']);
 
         $this->assertTrue($result);
     }
