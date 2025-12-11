@@ -6,15 +6,47 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Check if the current environment is development and a .hot file exists in the theme folder.
+ * Check if HMR is active by verifying both the .hot file exists
+ * and the Vite dev server is actually reachable.
  *
- * @return bool True if the environment is development and the .hot file exists, false otherwise.
+ * @return bool True if the environment is development, .hot file exists, and Vite server is reachable.
  */
 if (! function_exists('is_hmr')) {
     function is_hmr(): bool
     {
-        return wp_get_environment_type() === 'development'
-            && file_exists(get_theme_file_path('.hot'));
+        // Must be in development environment
+        if (wp_get_environment_type() !== 'development') {
+            return false;
+        }
+
+        // .hot file must exist
+        $hotFilePath = get_theme_file_path('.hot');
+        if (! file_exists($hotFilePath)) {
+            return false;
+        }
+
+        // Verify Vite server is actually reachable
+        $viteHost = config('vite.host', 'http://localhost:5173');
+
+        // Parse the host URL
+        $parsedUrl = parse_url($viteHost);
+        $host = $parsedUrl['host'] ?? 'localhost';
+        $port = $parsedUrl['port'] ?? 5173;
+
+        // Use a socket connection check (faster than HTTP request)
+        $connection = @fsockopen($host, $port, $errno, $errstr, 0.5);
+        if ($connection) {
+            fclose($connection);
+
+            return true;
+        }
+
+        // If server is not reachable, remove the .hot file to prevent future false positives
+        if (file_exists($hotFilePath)) {
+            @unlink($hotFilePath);
+        }
+
+        return false;
     }
 }
 
