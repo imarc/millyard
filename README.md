@@ -3,7 +3,7 @@
 [![Tests](https://github.com/imarc/millyard/actions/workflows/tests.yml/badge.svg)](https://github.com/imarc/millyard/actions/workflows/tests.yml)
 [![Code Quality](https://github.com/imarc/millyard/actions/workflows/code-quality.yml/badge.svg)](https://github.com/imarc/millyard/actions/workflows/code-quality.yml)
 
-Millyard is the foundational engine behind [Mill 4, our modern WordPress starter theme](https://github.com/imarc/mill-4). While Mill 4 provides developers with a clean, opinionated starting point for building sites, Millyard operates behind the scenes as its core dependency, supplying the essential base classes, scaffolding tools, and shared services that power the theme's structure and capabilities. It's designed to bring consistency, flexibility, and maintainability to every project built with Mill 4. Together, they're provisioned and deployed via a custom Pantheon upstream, ensuring that all new projects begin with a robust and unified development environment from the first commit.
+**Millyard** is the foundational engine behind [Mill 4, our modern WordPress starter theme](https://github.com/imarc/mill4-wp-starter-theme). While Mill 4 provides developers with a clean, opinionated starting point for building sites, **Millyard** operates behind the scenes as its core dependency, supplying the essential base classes, scaffolding tools, and shared services that power the theme's structure and capabilities. It's designed to bring consistency, flexibility, and maintainability to every project built with Mill 4. Together, they're provisioned and deployed via a custom Pantheon upstream, ensuring that all new projects begin with a robust and unified development environment from the first commit.
 
 ## Testing
 
