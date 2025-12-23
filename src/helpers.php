@@ -2,6 +2,7 @@
 
 use Imarc\Millyard\Services\Cache;
 use Imarc\Millyard\Services\Container;
+use Imarc\Millyard\Services\UtmTracker;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -231,5 +232,24 @@ if (! function_exists('cache_set')) {
     function cache_set(string $key, mixed $value, ?int $ttl = null): void
     {
         cache()->set($key, $value, $ttl);
+    }
+}
+
+
+
+/**
+ * Get UTM parameters from the session or cookie.
+ *
+ * @param string|null $key Optional specific UTM parameter key (e.g., 'utm_source', 'utm_campaign').
+ *                         If null, returns all UTM parameters.
+ * @param mixed $default Default value to return if the key is not found.
+ * @return mixed The UTM parameter value(s) or default if not found.
+ */
+if (! function_exists('get_utm_params')) {
+    function get_utm_params(?string $key = null, $default = null)
+    {
+        $utmTracker = Container::getInstance()->get(UtmTracker::class);
+
+        return $utmTracker->get($key, $default);
     }
 }
