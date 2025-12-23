@@ -19,21 +19,27 @@ class UtmTracker
 
     /**
      * Cookie name for storing UTM parameters
+     *
+     * @var string
      */
-    private const COOKIE_NAME = 'utm_params';
+    protected string $cookieName;
 
     /**
-     * Cookie expiration time (30 days)
+     * Cookie expiration time in seconds
+     *
+     * @var int
      */
-    private const COOKIE_EXPIRY = 30 * DAY_IN_SECONDS;
+    protected int $cookieExpiry;
 
     /**
      * Initialize the UtmTracker service
      *
      * @param array<string>|null $utmParameters Optional custom list of UTM parameters to track.
      *                                          If null, uses the default standard UTM parameters.
+     * @param string|null $cookieName Optional custom cookie name. Defaults to 'utm_params'.
+     * @param int|null $cookieExpiry Optional custom cookie expiration time in seconds. Defaults to 30 days.
      */
-    public function __construct(?array $utmParameters = null)
+    public function __construct(?array $utmParameters = null, ?string $cookieName = null, ?int $cookieExpiry = null)
     {
         $this->utmParameters = $utmParameters ?? [
             'utm_source',
@@ -42,6 +48,8 @@ class UtmTracker
             'utm_term',
             'utm_content',
         ];
+        $this->cookieName = $cookieName ?? 'utm_params';
+        $this->cookieExpiry = $cookieExpiry ?? (30 * DAY_IN_SECONDS);
     }
 
     /**
@@ -101,10 +109,10 @@ class UtmTracker
             // Store in cookie
             $cookieValue = json_encode($utmData);
             setcookie(
-                self::COOKIE_NAME,
+                $this->cookieName,
                 $cookieValue,
                 [
-                    'expires' => time() + self::COOKIE_EXPIRY,
+                    'expires' => time() + $this->cookieExpiry,
                     'path' => config('sessions.path', '/'),
                     'domain' => config('sessions.domain', ''),
                     'secure' => config('sessions.secure', false),
@@ -113,7 +121,7 @@ class UtmTracker
                 ]
             );
             // Also set in $_COOKIE for immediate access
-            $_COOKIE[self::COOKIE_NAME] = $cookieValue;
+            $_COOKIE[$this->cookieName] = $cookieValue;
         }
     }
 
@@ -156,8 +164,8 @@ class UtmTracker
         }
 
         // Retrieve from cookie
-        if (isset($_COOKIE[self::COOKIE_NAME])) {
-            $decoded = json_decode(stripslashes($_COOKIE[self::COOKIE_NAME]), true);
+        if (isset($_COOKIE[$this->cookieName])) {
+            $decoded = json_decode(stripslashes($_COOKIE[$this->cookieName]), true);
 
             return is_array($decoded) ? $decoded : [];
         }
@@ -175,7 +183,7 @@ class UtmTracker
         } else {
             // Clear cookie
             setcookie(
-                self::COOKIE_NAME,
+                $this->cookieName,
                 '',
                 [
                     'expires' => time() - 3600,
@@ -186,7 +194,7 @@ class UtmTracker
                     'samesite' => config('sessions.samesite', 'Lax'),
                 ]
             );
-            unset($_COOKIE[self::COOKIE_NAME]);
+            unset($_COOKIE[$this->cookieName]);
         }
     }
 
@@ -223,6 +231,32 @@ class UtmTracker
     public function setParameters(array $parameters): self
     {
         $this->utmParameters = array_unique($parameters);
+
+        return $this;
+    }
+
+    /**
+     * Set the cookie name for storing UTM parameters
+     *
+     * @param string $cookieName The cookie name to use
+     * @return self
+     */
+    public function setCookieName(string $cookieName): self
+    {
+        $this->cookieName = $cookieName;
+
+        return $this;
+    }
+
+    /**
+     * Set the cookie expiration time
+     *
+     * @param int $cookieExpiry Cookie expiration time in seconds
+     * @return self
+     */
+    public function setCookieExpiry(int $cookieExpiry): self
+    {
+        $this->cookieExpiry = $cookieExpiry;
 
         return $this;
     }
