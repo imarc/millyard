@@ -74,7 +74,8 @@ class UtmTracker
         foreach ($this->utmParameters as $param) {
             if (isset($_GET[$param]) && ! empty($_GET[$param])) {
                 $value = sanitize_text_field($_GET[$param]);
-                if (! empty($value)) {
+                // Skip Pantheon-stripped UTM parameter values
+                if (! empty($value) && $value !== 'PANTHEON_STRIPPED') {
                     $utmData[$param] = $value;
                     $hasUtmParams = true;
                 }
