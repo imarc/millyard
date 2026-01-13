@@ -261,4 +261,24 @@ class UtmTracker
 
         return $this;
     }
+
+    /**
+     * Get the cookie name for storing UTM parameters
+     *
+     * @return string The cookie name
+     */
+    public function getCookieName(): string
+    {
+        return $this->cookieName;
+    }
+
+    /**
+     * Get the cookie expiration time in seconds
+     *
+     * @return int The cookie expiration time in seconds
+     */
+    public function getCookieExpiry(): int
+    {
+        return $this->cookieExpiry;
+    }
 }
