@@ -3,7 +3,6 @@
 namespace App\Blocks;
 
 use Imarc\Millyard\Attributes\RegistersBlock;
-use Imarc\Millyard\Blocks\Block;
 
 #[RegistersBlock]
 class {{ class }} extends Block
